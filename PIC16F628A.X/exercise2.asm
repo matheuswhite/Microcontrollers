@@ -16,6 +16,7 @@ lock_flag   EQU	0x00
 	    
 	ORG 0x0004
 	BCF flags,  lock_flag
+	BCF INTCON, T0IF
 	BCF INTCON, T0IE ;disable timer interrupt
 	RETFIE
 	
@@ -55,7 +56,7 @@ reset_portb:
 	CLRF	PORTB
 	BTFSS	flags, lock_flag
 	CALL	start_timer
-	BSF	lock_flag
+	BSF	flags, lock_flag
 	RETURN
 	
 set_portb:
@@ -63,12 +64,12 @@ set_portb:
 	INCF	PORTB
 	BTFSS	flags, lock_flag
 	CALL	start_timer
-	BSF	lock_flag
+	BSF	flags, lock_flag
 	RETURN
 	
 start_timer:
-	BSF	INTCON, T0IE
 	BCF	INTCON,	T0IF
+	BSF	INTCON, T0IE
 	MOVLW   i_count
 	MOVWF   TMR0
 	RETURN
