@@ -8,10 +8,10 @@
 
 ;RB7 = set
 ;RB6 = reset
-;timer_count(20ms) = d'65302'|0xFF16
-;timer_count(110ms) = d'64222'|0xFADE
-timer_countL	EQU 0xDE
-timer_countH	EQU 0xFA
+;timer_count(20ms) = d'65506'|0xFFE2
+;timer_count(120ms) = d'65355'|0xFF4C
+timer_countL	EQU 0x4C
+timer_countH	EQU 0xFF
 control_reg	EQU 0x20
 self		EQU 0x01
 	
