@@ -13,6 +13,7 @@
 timer_countL	EQU 0xDE
 timer_countH	EQU 0xFA
 control_reg	EQU 0x20
+self		EQU 0x01
 	
 	ORG	0x0000
 	GOTO	setup
@@ -31,7 +32,8 @@ timer:
 	RETURN
 	
 button:
-	BCF	INTCON, RBIF		;clear rb change interrupt flag
+	MOVF	PORTB, self		;required to clear the flag RBIF
+	BCF	INTCON, RBIF		;cleaning up rb change interrupt flag
 	BCF	INTCON, RBIE		;disable rb change interrupt
 	
 	BTFSS	PORTB, RB7
@@ -59,6 +61,16 @@ setup:
 	BANKSEL	PCON			
 	BCF	PCON, OSCF		;setting internal clock as 48kHz
 	BSF	PIE1, TMR1IE		;enable timer1 interrupt
+	BCF	OPTION_REG, NOT_RBPU	;enable pull-ups in portb
+	
+	BANKSEL	PORTA
+	CLRF	PORTA			;cleaning up porta
+	CLRF	PORTB			;cleaning up portb. The flag RBIF will
+					;only be disabled if the portb was read
+					
+	CLRF	INTCON			;cleaning up intcon. After enable portb
+					;pull-ups, the INTF and the RBIF flags 
+					;will be enable
 	
 	BANKSEL	T1CON
 	MOVLW	b'00111000'		;7~6|00 - unimplemented
@@ -70,15 +82,12 @@ setup:
 	
 	MOVLW	b'11001000'		;7|1 - enable global interrupts
 	MOVWF	INTCON			;6|1 - enable peripheral interrupts
-	BCF	INTCON, RBIF		;5|0 - disable TMR0 interrupt
+					;5|0 - disable TMR0 interrupt
 					;4|0 - disable RB0 interrupt
 					;3|1 - enable RB port change interrupt
 					;2|0 - dont care
 					;1|0 - dont care
-					;0|0 - clear rb change interrupt flag
-					
-	BANKSEL	PORTA
-	CLRF	PORTA			;cleaning up porta
+					;0|0 - dont care
 	
 main:	SLEEP
 	GOTO	main
