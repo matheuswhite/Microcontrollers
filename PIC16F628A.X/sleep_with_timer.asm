@@ -49,10 +49,10 @@ skip:
 	BTFSS	PORTB, RB6
 	CLRF	PORTA			;reset porta
 	
-	MOVLW	timer_countL		;set timer1 initial value
-	MOVWF	TMR1L
-	MOVLW	timer_countH
+	MOVLW	timer_countH		;set timer1 initial value
 	MOVWF	TMR1H
+	MOVLW	timer_countL
+	MOVWF	TMR1L
 	BSF	T1CON, TMR1ON		;start timer1
 	RETURN
     
