@@ -10,7 +10,7 @@
 ;RB6 = reset
 ;timer_count(20ms) = d'65506'|0xFFE2
 ;timer_count(120ms) = d'65355'|0xFF4C
-timer_countL	EQU 0x4C
+timer_countL	EQU 0xE2
 timer_countH	EQU 0xFF
 control_reg	EQU 0x20
 self		EQU 0x01
@@ -34,6 +34,14 @@ timer:
 button:
 	MOVF	PORTB, self		;required to clear the flag RBIF
 	BCF	INTCON, RBIF		;cleaning up rb change interrupt flag
+	
+	BTFSS	PORTB, RB7		;checking that had interruption 
+	GOTO    skip
+	BTFSS	PORTB, RB6
+	GOTO    skip
+	RETURN
+	
+skip:
 	BCF	INTCON, RBIE		;disable rb change interrupt
 	
 	BTFSS	PORTB, RB7
@@ -85,9 +93,9 @@ setup:
 					;5|0 - disable TMR0 interrupt
 					;4|0 - disable RB0 interrupt
 					;3|1 - enable RB port change interrupt
-					;2|0 - dont care
-					;1|0 - dont care
-					;0|0 - dont care
+					;2|x - dont care
+					;1|x - dont care
+					;0|x - dont care
 	
 main:	SLEEP
 	GOTO	main
