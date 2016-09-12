@@ -1,3 +1,5 @@
+#ifndef	UTILS
+#define UTILS
 MOVLF	macro	literal, file
 	    MOVLW   literal
 	    MOVWF   file
@@ -60,9 +62,25 @@ ADDFF	macro	first, second, d
 		MOVWF	second
 	    endif
 	endm
+
+;0 - w
+;1 - 1st
+;2 - 2nd
+;first - second
+SUBFF	macro	first, second, d
+	    MOVF    second, W
+	    SUBWF   first, W
+	    if d == 1
+		MOVWF	first
+	    endif
+	    if d == 2
+		MOVWF	second
+	    endif
+	endm
 	
 ASI	macro	baseAdr, index
 	    MOVLF   baseAdr, FSR
 	    BANKSEL index
 	    ADDFF   index, FSR, 2
 	endm
+#endif

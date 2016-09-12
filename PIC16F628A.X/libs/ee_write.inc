@@ -3,6 +3,9 @@
         cblock  0x20
 	    count
 	endc
+
+#ifndef	EE_WRITE
+#define	EE_WRITE
 	
 EEWB	macro	EE_pos, file
 	    MOVFF   EE_pos, EEADR
@@ -35,3 +38,4 @@ while_loop:
 	    BTFSS   STATUS, Z
 	    GOTO    while_loop
 	endm
+#endif
