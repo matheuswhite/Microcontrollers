@@ -2,6 +2,7 @@
 #define UTILS
 MOVLF	macro	literal, file
 	    MOVLW   literal
+	    BANKSEL file
 	    MOVWF   file
 	endm
 	
@@ -46,6 +47,7 @@ SETBANK	macro   bank
 	
 ADDLF	macro	literal, file, d
 	    MOVLW   literal
+	    BANKSEL file
 	    ADDWF   file, d
 	endm
 	
@@ -53,9 +55,12 @@ ADDLF	macro	literal, file, d
 ;1 - 1st
 ;2 - 2nd
 ADDFF	macro	first, second, d
+	    BANKSEL first
 	    MOVF    first, W
+	    BANKSEL second
 	    ADDWF   second, W
 	    if d == 1
+		BANKSEL	first
 		MOVWF	first
 	    endif
 	    if d == 2
@@ -68,12 +73,15 @@ ADDFF	macro	first, second, d
 ;2 - 2nd
 ;first - second
 SUBFF	macro	first, second, d
+	    BANKSEL second
 	    MOVF    second, W
+	    BANKSEL first
 	    SUBWF   first, W
 	    if d == 1
 		MOVWF	first
 	    endif
 	    if d == 2
+		BANKSEL second
 		MOVWF	second
 	    endif
 	endm
