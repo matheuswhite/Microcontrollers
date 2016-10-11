@@ -16,8 +16,10 @@ EEWB	macro	EE_pos, file
 	    BTFSC   INTCON, GIE
 	    GOTO    $-2
 	    
-	    MOVLF   h'55', EECON2
-	    MOVLF   h'AA', EECON2
+	    MOVLW   h'55'
+	    MOVWF   EECON2
+	    MOVLW   h'AA'
+	    MOVWF   EECON2
 	    BSF	    EECON1, WR
 	    BSF	    INTCON, GIE
 	    BCF	    EECON1, WREN
